@@ -27,7 +27,7 @@ public:
      * @param row Holds the return value for the row of the move
      * Obtains the (col,row) coordinates for the current move
      */
-    void get_move(OthelloBoard* b, int& col, int& row);
+    void get_move(OthelloBoard *b, int& col, int& row);
 
     /**
      * @return A pointer to a copy of the HumanPlayer object

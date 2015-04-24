@@ -34,7 +34,7 @@ public:
      * @param row Holds the row of the player's move
      * Gets the next move for the player
      */
-    virtual void get_move(OthelloBoard* b, int& col, int& row) = 0;
+    virtual void get_move(OthelloBoard *b, int& col, int& row) = 0;
 
     /**
      * @return A copy of the Player object
