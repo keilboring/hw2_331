@@ -9,9 +9,12 @@
 #include "MinimaxPlayer.h"
 #include <list>
 #include <unordered_map>
-#include <algorithm>>
+#include <algorithm>
 
 using std::vector;
+
+int MIN_VALUE(OthelloBoard *b, int& col, int& row);
+int MAX_VALUE(OthelloBoard *b, int& col, int& row);
 
 MinimaxPlayer::MinimaxPlayer(char symb) :
 		Player(symb) {
@@ -24,55 +27,76 @@ MinimaxPlayer::~MinimaxPlayer() {
 
 
 int MiniMaxDecision(OthelloBoard *b, int& col, int&row){
-
-	//std::list<OthelloBoard> succesors;
-
-	//for (int i = 0; i < 4; i++){
-	//	for (int x = 0; x < 4; x++){
-	//		if (b->is_legal_move(i, x, 'O')){
-	//			succesors.push_back()
-	//			printf("c:%d r:%d \n", i, x);
-	//			col = i;
-	//			row = x;
-	//			OthelloBoard *c = new OthelloBoard(*b);
-	//			c->play_move(col, row, 'O');
-	//		}
-	//	}
-	//}
+	MAX_VALUE(b, col, row);
 	return 0;
 }
-//int MIN_VALUE(std::unordered_map<char, node> hashTable, char state);
-//
-//int MAX_VALUE(std::unordered_map<char, node> hashTable, char state){
-//	node cur_state = hashTable[state];
-//	if (cur_state.succesors.empty()){
-//		return cur_state.utility_value;
-//	}
-//	int v = -9999;
-//	//for each successor states
-//	for (std::list<char>::iterator it = cur_state.succesors.begin(); it != cur_state.succesors.end(); it++){
-//		char temp = *it;
-//		v = std::max(v, MIN_VALUE(hashTable, temp));
-//	}
-//	return v;
-//}
 
-//int MIN_VALUE(std::unordered_map<char, node> hashTable, char state){
-//	node cur_state = hashTable[state];
-//	if (cur_state.succesors.empty()){
-//		return cur_state.utility_value;
-//	}
-//	int v = 9999;
-//	//for each successor states
-//	for (std::list<char>::iterator it = cur_state.succesors.begin(); it != cur_state.succesors.end(); it++){
-//		char temp = *it;
-//		v = std::min(v, MAX_VALUE(hashTable, temp));
-//	}
-//	return v;
-//}
+
+int MAX_VALUE(OthelloBoard *b, int& col, int& row){
+	int cntSuccessors = 0;
+	int v = -9999;
+	int result_col = 0;
+	int result_row = 0;
+	for (int i = 0; i < 4; i++){
+		for (int x = 0; x < 4; x++){
+			if (b->is_legal_move(i, x, 'O')){
+
+				//printf("c:%d r:%d \n", i, x);
+				OthelloBoard *c = new OthelloBoard(*b);
+				c->play_move(i, x, 'O');
+				cntSuccessors++;
+				//v = std::max(v, MIN_VALUE(c, col, row));
+				if (MIN_VALUE(c, col, row) > v){
+					v = MIN_VALUE(c, col, row);
+					result_col = i;
+					result_row = x;
+				}
+			}
+		}
+	}
+	if (cntSuccessors == 0){
+		return b->count_score('O') - b->count_score('X');
+	}
+	col = result_col;
+	row = result_row;
+	return v;
+}
+
+int MIN_VALUE(OthelloBoard *b, int& col, int& row){
+	int cntSuccessors = 0;
+	int v = 9999;
+	int result_col = 0;
+	int result_row = 0;
+	for (int i = 0; i < 4; i++){
+		for (int x = 0; x < 4; x++){
+			if (b->is_legal_move(i, x, 'X')){
+
+				//printf("c:%d r:%d \n", i, x);
+				OthelloBoard *c = new OthelloBoard(*b);
+				c->play_move(i, x, 'X');
+				cntSuccessors++;
+				//v = std::min(v, MAX_VALUE(c, col, row));
+				//col = i;
+				//row = x;
+				if (MIN_VALUE(c, col, row) < v){
+					v = MIN_VALUE(c, col, row);
+					result_col = i;
+					result_row = x;
+				}
+			}
+		}
+	}
+	if (cntSuccessors == 0){
+		return b->count_score('O') - b->count_score('X');
+	}
+
+	col = result_col;
+	row = result_row;
+	return v;
+}
 void MinimaxPlayer::get_move(OthelloBoard *b, int& col, int& row) {
     // To be filled in by you
-	while (1){
+	//while (1){
 
 
 		printf("get computer move\n");
@@ -86,35 +110,39 @@ void MinimaxPlayer::get_move(OthelloBoard *b, int& col, int& row) {
 				}
 			}
 		}
+		MiniMaxDecision(b, col, row);
+		printf("\ncomputer picked to play c:%d r:%d \n", col, row);
+		//OthelloBoard *c = new OthelloBoard(*b);
+		//c->play_move(col, row, 'O');
+		////c->display;
+		//printf("get computer move\n");
+		//for (int i = 0; i < 4; i++){
+		//	for (int x = 0; x < 4; x++){
+		//		if (c->is_legal_move(i, x, 'O')){
+		//			printf("c:%d r:%d \n", i, x);
+		//			col = i;
+		//			row = x;
+		//		}
+		//	}
+		//}
 
-		OthelloBoard *c = new OthelloBoard(*b);
-		c->play_move(col, row, 'O');
-		//c->display;
-		printf("get computer move\n");
-		for (int i = 0; i < 4; i++){
-			for (int x = 0; x < 4; x++){
-				if (c->is_legal_move(i, x, 'O')){
-					printf("c:%d r:%d \n", i, x);
-					col = i;
-					row = x;
-				}
-			}
-		}
+		//printf("get computer move\n");
+		//for (int i = 0; i < 4; i++){
+		//	for (int x = 0; x < 4; x++){
+		//		if (b->is_legal_move(i, x, 'O')){
+		//			printf("c:%d r:%d \n", i, x);
+		//			col = i;
+		//			row = x;
+		//		}
+		//	}
+		//}
 
-		printf("get computer move\n");
-		for (int i = 0; i < 4; i++){
-			for (int x = 0; x < 4; x++){
-				if (b->is_legal_move(i, x, 'O')){
-					printf("c:%d r:%d \n", i, x);
-					col = i;
-					row = x;
-				}
-			}
-		}
-
-		getchar();
-		getchar();
-	}
+		printf("X score = %d\n", b->count_score('X'));
+		printf("O score = %d\n", b->count_score('O'));
+		printf("O - X = %d\n\n", b->count_score('O') - b->count_score('X'));
+		//getchar();
+		//getchar();
+	//}
 
 }
 

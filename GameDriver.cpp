@@ -110,6 +110,7 @@ void GameDriver::run() {
 	} else {
 		std::cout << "Player 2 wins" << std::endl;
 	}
+	getchar();
 }
 
 int main(int argc, char** argv) {
